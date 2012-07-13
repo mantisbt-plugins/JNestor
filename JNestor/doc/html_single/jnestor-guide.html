@@ -1,0 +1,298 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><link rel="stylesheet" href="docbook.css" type="text/css"><title>JNestor Reference Manual</title><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="en" class="book" title="JNestor Reference Manual"><div class="titlepage"><div><div><h1 class="title"><a name="idp63840"></a>JNestor Reference Manual</h1></div><div><div class="author"><h3 class="author"><span class="firstname">Raul</span> <span class="surname">Luna</span></h3></div></div><div><a href="ln-idp37456.html">Legal Notice</a></div><div><div class="revhistory"><table border="1" width="100%" summary="Revision history"><tr><th align="left" valign="top" colspan="2"><b>Revision History</b></th></tr><tr><td align="left">Revision 1.0</td><td align="left">Feb 2012</td></tr><tr><td align="left" colspan="2">First version</td></tr></table></div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#introduction">1. Introduction</a></span></dt><dd><dl><dt><span class="sect1"><a href="#products-used">Products used in this software</a></span></dt><dt><span class="sect1"><a href="#conventions">Conventions used in this document</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp5609552">Linux or Windows??</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="#installation">2. Installation</a></span></dt><dt><span class="chapter"><a href="#configuration">3. Configuring jNestor</a></span></dt></dl></div><div class="list-of-tables"><p><b>List of Tables</b></p><dl><dt>1.1. <a href="#idp8520496">Softtware used</a></dt></dl></div><div class="chapter" title="Chapter 1. Introduction"><div class="titlepage"><div><div><h2 class="title"><a name="introduction"></a>Chapter 1. Introduction</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#products-used">Products used in this software</a></span></dt><dt><span class="sect1"><a href="#conventions">Conventions used in this document</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp5609552">Linux or Windows??</a></span></dt></dl></dd></dl></div><div class="sect1" title="Products used in this software"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="products-used"></a>Products used in this software</h2></div></div></div><p>
+    As many actual software, this software relies in many 
+    external libraries to do its job. This isn't a novelty. 
+    However, I want to specify this list just in case 
+    everybody knows it. 
+    </p><div class="table"><a name="idp8520496"></a><p class="title"><b>Table 1.1. Softtware used</b></p><div class="table-contents"><table summary="Softtware used" border="1"><colgroup><col><col></colgroup><thead><tr><th>Product</th><th>License / What it does</th></tr></thead><tbody><tr><td>MantisConnect</td><td>
+      Propietary. It costs 50 euros if you plan
+      to use this software for business (what else
+      you would want this software for, mm??) 
+      </td></tr><tr><td>Spring</td><td> </td></tr><tr><td> </td><td> </td></tr></tbody></table></div></div><br class="table-break"></div><div class="sect1" title="Conventions used in this document"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="conventions"></a>Conventions used in this document</h2></div></div></div><p>
+    We will start with the usual, how we write certain things 
+    in the document: program listings, admonitions, and stuff like 
+    that.
+    </p><div class="caution" title="This will be for special advices" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution: This will be for special advices"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="gfx/caution.png"></td><th align="left">This will be for special advices</th></tr><tr><td align="left" valign="top"><p>
+    This box will be used when referring to 
+    things that, when unproperly done, may damage 
+    the correct behaviour of the program.
+    </p></td></tr></table></div><div class="warning" title="This will be for warnings" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning: This will be for warnings"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Warning]" src="gfx/warning.png"></td><th align="left">This will be for warnings</th></tr><tr><td align="left" valign="top"><p>
+    We will use this box to refer to things that you 
+    have to put special care when doing them.
+    </p></td></tr></table></div><div class="tip" title="This will be for advices and tricks" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip: This will be for advices and tricks"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="gfx/tip.png"></td><th align="left">This will be for advices and tricks</th></tr><tr><td align="left" valign="top"><p>
+    We will use this box to refer to things that must 
+    help in the configuration. 
+    </p></td></tr></table></div><p>
+    In general, filenames along this book will appear 
+    with this type of text: <code class="filename">this-is-a-filename.txt</code>.
+    Moreover, when refering to text that appear as an output
+    of the computer (like the output of a log file), they will 
+    appear as this:
+    </p><p>
+    </p><pre class="screen">
+2012-52-25 00:52:57 INFO  supermanhamuerto.nestor.MailReader       - Opening session...
+2012-52-25 00:52:57 INFO  supermanhamuerto.nestor.MailReader       - url:http://localhost/mantisbt-1.2.8/api/soap/mantisconnect.php
+    </pre><p>
+    </p><p>
+    On the other hand, when speaking of things that must 
+    be typed, the text will appear as this: <strong class="userinput"><code>dir</code></strong>.
+    If the computer outputs the text, it will be shown 
+    as this: <code class="computeroutput">Hello world!!</code>
+    </p><div class="sect2" title="Linux or Windows??"><div class="titlepage"><div><div><h3 class="title"><a name="idp5609552"></a>Linux or Windows??</h3></div></div></div><p>
+    Whenever possible, I'll avoid to give the same instructions 
+    for Windows&#8482; and Linux, specially if they are more or 
+    less the same. This will make the text more readable. This 
+    document is highly technical and the audience is accustomed 
+    to <span class="quote">&#8220;<span class="quote">Linuxize</span>&#8221;</span> the windows commands or to 
+    <span class="quote">&#8220;<span class="quote">Windize</span>&#8221;</span> the linux ones.
+    </p></div></div></div><div class="chapter" title="Chapter 2. Installation"><div class="titlepage"><div><div><h2 class="title"><a name="installation"></a>Chapter 2. Installation</h2></div></div></div><p>
+Download the latest bundle of the website and uncompress it. After 
+uncompressing the contents, you will find some things in it: 
+</p><p>
+
+</p></div><div class="chapter" title="Chapter 3. Configuring jNestor"><div class="titlepage"><div><div><h2 class="title"><a name="configuration"></a>Chapter 3. Configuring jNestor</h2></div></div></div><p>
+So you have downloaded the zip (or tgz) bundle, 
+uncompressed it and now...what??</p><p>
+The aim of this document is to explain the basics 
+for make Jnestor to do what is designed for, and 
+to suit into your particular case as smoothly as 
+possible.
+</p><p>
+There is only one configuration file in JNestor: 
+<code class="filename">applicationContext.xml</code>. If you 
+know something about java programming, you should 
+be aware that this file is in reality the configuration 
+file for the beans of the application. I've decided
+to put the configuration in that file because that 
+allow me many advantages:
+</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+I don't need to make code for the configuration 
+of the application: Spring takes this duty for me, allowing 
+me to concentrate on other tasks
+</p></li><li class="listitem"><p>
+I can easily configure things like cuustom actions 
+by wiring them to the proper list of beans
+</p></li><li class="listitem"><p>
+Even the log information is stored in the 
+<code class="filename">applicationContext.xml</code> file, 
+making thus the unique configuration file for 
+the whole application. You can forget of the 
+hassle of having many configuration files
+</p></li><li class="listitem"><p>
+Saving a previous state of the configuration is easier: 
+just make a copy of this file and you are done
+</p></li></ul></div><div class="caution" title="applicationContext, a blessing and a danger" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution: applicationContext, a blessing and a danger"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="gfx/caution.png"></td><th align="left">applicationContext, a blessing and a danger</th></tr><tr><td align="left" valign="top"><p>
+This model has also disadvantages: this file is and xml file, 
+and because of this, any nuance can cause it to don't load 
+properly. To prevent that cases, I strongly recommend to 
+make copies of this file prior any important modification. 
+</p></td></tr></table></div><div class="note" title="If you have reached this point..." style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note: If you have reached this point..."><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="gfx/note.png"></td><th align="left">If you have reached this point...</th></tr><tr><td align="left" valign="top"><p>
+	From time to time, in the configuration process, 
+	you will come across with sections like this: in 
+	this sections I will double-check the previous 
+	configurations, just to be sure the previous 
+	changes are working.   
+    </p></td></tr></table></div><div class="sect2" title="Avoid to do something you could lament"><div class="titlepage"><div><div><h3 class="title"><a name="avoid-something"></a>Avoid to do something you could lament</h3></div></div></div><p>
+    Although the instruction I am giving here are for 
+    the configuration with the minimum impact, I suggest 
+    to take precautions in trying any new software. 
+    </p><p>
+    So, the first thing we will do is to install a filter
+    for the emails that JNestor will process. Only emails 
+    with the subject <span class="quote">&#8220;<span class="quote">yor-name</span>&#8221;</span> or <span class="quote">&#8220;<span class="quote">9778</span>&#8221;</span>
+    will be processed, the rest will be left untouched.
+    </p><p>
+    In order to do so, open the 
+    file <code class="filename">applicationContext.xml</code>
+    and search for <strong class="userinput"><code>filter.contains1</code></strong>.
+    You should find something like this: 
+    </p><p>
+    </p><pre class="programlisting">
+    &lt;!-- LEAVE BLANK THIS FILTER TO PROCESS ALL EMAILS --&gt;
+    &lt;prop key="filter.contains1"&gt;.*9778.*&lt;/prop&gt;
+    </pre><p>
+    </p><p>
+    This is a filter who only will process the emails with
+    the figures 9778 in the subject. While configuring 
+    JNestor, put whatever you want in substitution of this 
+    9778, and after the configuration, remove this. 
+    </p></div><div class="sect2" title="Configure mantis access"><div class="titlepage"><div><div><h3 class="title"><a name="idp8287584"></a>Configure mantis access</h3></div></div></div><div class="sect3" title="Guess mantis API url"><div class="titlepage"><div><div><h4 class="title"><a name="idp8288320"></a>Guess mantis API url</h4></div></div></div><p>
+        Mantis url is something like this: 
+        <code class="filename">http://server/mantis/api/soap/mantisconnect.php</code>. 
+        Probably, in the release you have configured the development server
+        I use, which is installed in <code class="filename">localhost</code>. Make the 
+        proper changes in this url and put in the file.
+        </p><div class="note" title="If you have reached this point..." style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note: If you have reached this point..."><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="gfx/note.png"></td><th align="left">If you have reached this point...</th></tr><tr><td align="left" valign="top"><p>
+        Check that the url of mantis works: open a browser and point it 
+        to the url you have made. You should see something like this: 
+        
+        </p><div class="screenshot"><div class="mediaobject"><img src="images/50-01-mantis-api.png" alt="The API of mantis, in a browser"></div></div></td></tr></table></div></div><div class="sect3" title="In which project do you want the issues be entered??"><div class="titlepage"><div><div><h4 class="title"><a name="idp9113968"></a>In which project do you want the issues be entered??</h4></div></div></div><p>
+        JNestor only can enter the new issues in a specific project in 
+        Mantis. One mailbox, one project: if you have two projects, consider
+        to have two mailboxes and two instances of JNestor running at 
+        the same time. 
+        </p><p>
+        To guess the project number, just enter into mantis and click on 
+        <span class="guimenu">Manage</span> -&gt; <span class="guimenuitem">Manage Projects</span>. 
+        The list of projects in Mantis should appear.
+        </p><p>
+        Click on the project you want. In the address box of your browser, 
+        you should see something like this: 
+        <code class="filename">http://localhost/mantis/manage_proj_edit_page.php?project_id=1</code>.
+        The number that comes after <code class="computeroutput">project_id=</code>
+        is the project number.
+        </p><div class="tip" title="Tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="gfx/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>
+        If you are not the administrator, there are other ways to guess the 
+        project number. If you try to move an issue (edit the issue and then click 
+        on the button <span class="guibutton">Move</span>), you will see a list of 
+        the available projects. Just see the source code of this page and 
+        you will get a list of the projects with the respective id's.
+        </p></td></tr></table></div></div><div class="sect3" title="Create an user"><div class="titlepage"><div><div><h4 class="title"><a name="idp9121248"></a>Create an user</h4></div></div></div><p>
+        You need a mantis who has permission to enter his own issues in mantis. 
+        Everything in mantis is entered with an username, even the items put 
+        through the <acronym class="acronym">API</acronym>.
+        </p><p>
+        To create a user for JNestor, just follow the following steps:
+        </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+        Enter in mantis with administrative privileges and 
+        <span class="guimenu">manage</span> -&gt; <span class="guisubmenu">manage users</span>
+        </p></li><li class="listitem"><p>
+        Click on the <span class="guibutton">create new account</span> button
+        </p></li><li class="listitem"><p>
+        And enter the data of the new account. For the purpose of this 
+        manual, I've entered an username of <strong class="userinput"><code>jnestor</code></strong>, 
+        the rest of the data is irrelevant. You have to enter a correct 
+        email address because you have to reset the password afterwards. 
+</p><div class="screenshot"><div class="mediaobject"><img src="images/50-02-creating-user.png" alt="Options screen of firefox"></div></div><p>
+
+        </p></li><li class="listitem"><p>
+        You have to reset the password of this new user, but probably you are 
+        familiarized with mantis enough to do so. Remember that mantis 
+        </p></li></ol></div></div></div><div class="sect2" title="Configure email access"><div class="titlepage"><div><div><h3 class="title"><a name="idp8101168"></a>Configure email access</h3></div></div></div><p>
+    Probably is the most complex part of this, because too many parameters 
+    here, all of them inherited from JavaMail. If you work in a corporate 
+    enviroment, and have access to the email administrator, is a good idea 
+    to ask him (or her) what are the correct values here.
+    </p><p>
+    If not, or if you are working with publicly available network accounts, 
+    here is my advice: try to configure one email client (Thunderbird, Outlook). 
+    If you succeed in this, you are almost done to configure JNestor.
+    </p><div class="sect3" title="Email configuration"><div class="titlepage"><div><div><h4 class="title"><a name="idp8103296"></a>Email configuration</h4></div></div></div><p>
+    Email configuration is controlled via the following entries 
+    in the <code class="filename">applicationContex.xml</code> filename
+    (see below). We will going over these sections 
+    </p><pre class="programlisting">
+ &lt;!-- 
+ Example of secure mail configuration
+  --&gt;
+ &lt;!-- 
+ &lt;prop key="mail.usessl"&gt;true&lt;/prop&gt;
+ &lt;prop key="mail.user"&gt;jnestor.test&lt;/prop&gt;
+ &lt;prop key="mail.password"&gt;superman_ha_muerto&lt;/prop&gt;
+ &lt;prop key="mail.store.host"&gt;imap.gmail.com&lt;/prop&gt;
+ &lt;prop key="mail.store.protocol"&gt;imap&lt;/prop&gt;
+ &lt;prop key="mail.imap.port"&gt;993&lt;/prop&gt;
+ &lt;prop key="mail.imap.socketFactory.port"&gt;993&lt;/prop&gt;
+ &lt;prop key="mail.imap.socketFactory.class"&gt;javax.net.ssl.SSLSocketFactory&lt;/prop&gt;
+ &lt;prop key="mail.store.inbox"&gt;INBOX&lt;/prop&gt;
+  
+ Thanks to http://magnuspo.wordpress.com/2008/05/30/javamail-secure-smtp/
+ 
+ &lt;prop key="mail.smtp.host"&gt;smtp.googlemail.com&lt;/prop&gt;
+ &lt;prop key="mail.smtp.port"&gt;465&lt;/prop&gt;
+ &lt;prop key="mail.smtp.auth"&gt;true&lt;/prop&gt;
+ &lt;prop key="mail.smtp.socketFactory.port"&gt;465&lt;/prop&gt;
+ &lt;prop key="mail.smtp.socketFactory.class"&gt;javax.net.ssl.SSLSocketFactory&lt;/prop&gt;
+ &lt;prop key="mail.smtp.socketFactory.fallback"&gt;false&lt;/prop&gt;
+  --&gt;
+ &lt;!-- 
+ Example of insecure mail configuration
+  --&gt;
+ &lt;prop key="mail.usessl"&gt;false&lt;/prop&gt;
+ &lt;prop key="mail.user"&gt;rluna&lt;/prop&gt;
+ &lt;prop key="mail.password"&gt;dixfont67&lt;/prop&gt;
+ &lt;prop key="mail.store.host"&gt;imap.arrakis.es&lt;/prop&gt;
+ &lt;prop key="mail.store.protocol"&gt;imap&lt;/prop&gt;
+ &lt;prop key="mail.imap.port"&gt;143&lt;/prop&gt;
+ &lt;prop key="mail.store.inbox"&gt;INBOX&lt;/prop&gt;
+ &lt;prop key="mail.smtp.host"&gt;smtp.arrakis.es&lt;/prop&gt;
+ &lt;prop key="mail.smtp.port"&gt;587&lt;/prop&gt;
+ &lt;!-- 
+ What will be the maximum attachment size in bytes?
+  --&gt;
+ &lt;prop key="maximumAttachmentSize"&gt;15000000&lt;/prop&gt;    
+    </pre></div></div><div class="sect2" title="Logging configuration"><div class="titlepage"><div><div><h3 class="title"><a name="idp6746000"></a>Logging configuration</h3></div></div></div><p>
+    The configuration of logging of the application is located in the 
+    file <code class="filename">applicationContext.xml</code>. As opposed to 
+    other applications, that should have a working <code class="filename">log4j.properties</code>,
+    here it is embedded into the application context.</p><p>
+    In the file <code class="filename">applicationContext.xml</code>, search 
+    for <span class="quote">&#8220;<span class="quote">loggerConfigurator</span>&#8221;</span> and you will see something 
+    like this:
+    </p><pre class="programlisting">
+ &lt;props&gt;
+    &lt;!-- 
+    root logger configuration: it will log all errors (including trace messages)
+    and them will be directed to the logfile appender
+     --&gt;
+    &lt;prop key="log4j.rootLogger"&gt;ERROR, logfile&lt;/prop&gt;
+    
+    &lt;prop key="log4j.appender.logfile"&gt;org.apache.log4j.RollingFileAppender&lt;/prop&gt;
+    &lt;prop key="log4j.appender.logfile.maxFilesize"&gt;1MB&lt;/prop&gt;
+    &lt;prop key="log4j.appender.logfile.maxBackupIndex"&gt;9&lt;/prop&gt;
+    &lt;prop key="log4j.appender.logfile.File"&gt;PUT-HERE-A-CORRECT-FILENAME.LOG&lt;/prop&gt;
+    &lt;prop key="log4j.appender.logfile.layout"&gt;org.apache.log4j.PatternLayout&lt;/prop&gt;
+    &lt;prop key="log4j.appender.logfile.layout.ConversionPattern"&gt;%d{yyyy-mm-dd HH:mm:ss} %-5p %-40c{3} - %m%n&lt;/prop&gt;
+&lt;/props&gt;        
+    </pre><p>
+    This is a typical configuration of a log file, but with the difference that 
+    the properties and their values are stored in form of xml data. 
+    </p><div class="sect3" title="Change of the log file location"><div class="titlepage"><div><div><h4 class="title"><a name="idp6752144"></a>Change of the log file location</h4></div></div></div><p>
+        You will see a line like this:
+        </p><pre class="programlisting">
+    &lt;prop key="log4j.appender.logfile.File"&gt;PUT-HERE-A-CORRECT-FILENAME.LOG&lt;/prop&gt;    
+        </pre><p>
+        You have to enter a correct filename there. If not, the filename
+        <code class="filename">PUT-HERE-A-CORRECT-FILENAME.LOG</code> will be used, 
+        storing the log information who-knows-where.
+        </p></div><div class="sect3" title="Change the global detail of logging"><div class="titlepage"><div><div><h4 class="title"><a name="idp6755392"></a>Change the global detail of logging</h4></div></div></div><p>
+        The detail of loggin is controlled via this line:
+        </p><pre class="programlisting">
+            &lt;prop key="log4j.rootLogger"&gt;ERROR, logfile&lt;/prop&gt;
+        </pre><p>
+        By default is configured in the <strong class="userinput"><code>ERROR</code></strong> level, 
+        which is the most basic level of logging: it will only appear the 
+        errors of the program. You can select other levels, from less 
+        informational to most informational are: 
+        </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+        <span class="emphasis"><em>FATAL</em></span>: only informs of the most severe errors
+        </p></li><li class="listitem"><p>
+        <span class="emphasis"><em>ERROR</em></span> (current level): only informs of errors during the 
+        operation of the program
+        </p></li><li class="listitem"><p>
+        <span class="emphasis"><em>WARN</em></span>: more detailed, informs of warnings
+        </p></li><li class="listitem"><p>
+        <span class="emphasis"><em>INFO</em></span>
+        </p></li><li class="listitem"><p>
+        <span class="emphasis"><em>DEBUG</em></span>: very detailed. Inform almost of everything. 
+        </p></li><li class="listitem"><p>
+        <span class="emphasis"><em>TRACE</em></span>
+        </p></li></ul></div><div class="tip" title="Tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="gfx/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>
+        It is suggested to change this level to <strong class="userinput"><code>DEBUG</code></strong>
+        during tests, in order to detect errors or misconfigurations.
+        </p></td></tr></table></div></div><div class="sect3" title="Other approximations"><div class="titlepage"><div><div><h4 class="title"><a name="other-aproximations"></a>Other approximations</h4></div></div></div><p>
+        Consult the 
+        <a class="link" href="#">
+        documentation of log4j</a> in order to do things like
+        email certain types of errors by creating an extra 
+        appender of type 
+        <a class="link" href="#"><code class="filename">SMTPAppender</code></a>.
+        </p></div></div><div class="sect2" title="Remove the email filter and you are done"><div class="titlepage"><div><div><h3 class="title"><a name="idp6772512"></a>Remove the email filter and you are done</h3></div></div></div><p>
+    When you are finished, remember the filter we put in
+    
+    <a class="xref" href="#avoid-something" title="Avoid to do something you could lament">the section called &#8220;Avoid to do something you could lament&#8221;</a>
+     and remove it. 
+    </p><p>
+    You know, open the file <code class="filename">applicationContext.xml</code>
+    and locate the keyworkds <strong class="userinput"><code>filter.contains1</code></strong>
+    and leave it blank.
+    </p></div></div></div></body></html>

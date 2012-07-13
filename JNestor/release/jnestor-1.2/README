@@ -1,0 +1,55 @@
+
+
+JNestor: another majordomo in java
+----------------------------------
+
+This is a project in development, so documentation is still sparse. 
+
+The good news are that I am plenty of time to attend to the 
+mailing list, so I don't mind to answer to whatever question 
+you may ask. Feel free to ask them to jnestor-general@lists.sourceforge.net.
+
+
+Version 1.2
+-----------
+
+Release: 2012-02-20
+
+    - I detected a problem with the resend part of the custom 
+    actions of mantis: it doesn't resend the file properly. 
+    I've fixed allowing to resend in text/html format instead 
+    of using pure text sending. 
+    - Moreover, there were some problems with the configuration: 
+    the texts were badly composed, and the final result in mantis 
+    wasn't good: I think it was caused by the fact that those texts
+    were copied from a properties file to a mantis file and they 
+    weren't working well
+    
+    
+Version 1.1
+-----------
+
+Release: 2012-02-07
+
+    - I've suppressed the file jnestor-config.properties and
+      integrate it into the config file of spring (applicationContext.xml)
+      Now the configuration its done changing parts of this file.
+
+
+
+Version 1.0
+-----------
+
+Release: 2012-02-04
+
+    - Development of the core of the project
+    - Development of the mantis mail processor (MailProcessorMantis) 
+      and various actions: Archive -to archive messages-, 
+      Deleter -to delete messages-, Resend -to resend some 
+      messages to other accounts or forward the messages-
+
+Future directions: 
+
+    - Improve the mantis actions to detect if they are from a 
+      new issue or a follow-up of an existing one (a new note):
+      this could make the actions be more precise in their doings

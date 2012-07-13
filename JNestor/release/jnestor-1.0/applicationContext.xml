@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/security 
+           http://www.springframework.org/schema/security/spring-security-2.0.xsd
+           http://www.springframework.org/schema/lang 
+           http://www.springframework.org/schema/lang/spring-lang-2.5.xsd">
+
+	<!-- scope=prototype: every call to getBean, Spring returns a new object 
+		scope=singleton: every call to getbean, Spring returns the same object Only 
+		for web: scope=request scope=session scope=globalSession (only for portlets) -->
+
+    <!-- 
+
+    Logger ....................................................................
+
+    see http://logging.apache.org/log4j/1.2/manual.html for examples 
+    of properties 
+    
+     -->
+    
+    <!-- 
+    the "main" app class can't have a static class linked to 
+    the object because it will be created BEFORE spring comes 
+    into place. To solve that chicken and egg problem, we just
+    crate this logger bean to be used by the main application
+    and the rest of the application
+     -->
+    <bean id="logger" 
+          class="org.apache.commons.logging.LogFactory"
+          factory-method="getLog"
+          scope="singleton">
+        <constructor-arg value="com.supermanhamuerto.nestor"/>
+    </bean>
+    
+    <bean id="loggerConfigurator"
+          class="com.supermanhamuerto.util.LoggerConfiguratorBean"
+          scope="singleton">
+        <property name="configuration">
+             <props>
+                <!-- 
+                root logger configuration: it will log all errors (including trace messages)
+                and them will be directed to the logfile appender
+                 -->
+                <prop key="log4j.rootLogger">INFO, console, logfile</prop>
+                
+                <prop key="log4j.appender.console">org.apache.log4j.ConsoleAppender</prop>
+                <prop key="log4j.appender.console.layout">org.apache.log4j.PatternLayout</prop>
+                <prop key="log4j.appender.console.layout.ConversionPattern">%d %-5p %-40c{3} - %m%n</prop>
+
+                <prop key="log4j.appender.logfile">org.apache.log4j.FileAppender</prop>
+                <prop key="log4j.appender.logfile.File">/home/rluna/tmp/nestor.log</prop>
+                <prop key="log4j.appender.logfile.layout">org.apache.log4j.PatternLayout</prop>
+                <prop key="log4j.appender.logfile.layout.ConversionPattern">%d{yyyy-mm-dd HH:mm:ss} %-5p %-40c{3} - %m%n</prop>
+            </props>       
+        </property>
+    </bean> 
+
+    
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          scope="singleton">
+        <property name="locations" value="jnestor-config.properties"/>
+    </bean>
+
+
+    <!-- 
+    Mantis bean
+     -->
+    <bean id="mantis" class="com.supermanhamuerto.nestor.Mantis" 
+        init-method="init"
+        scope="prototype">
+        <property name="idf" ref="issueDataFactory"/>
+        <property name="url" value="${mantis.url}"/>
+        <property name="projectId" value="${mantis.projectid}"/>
+        <property name="user" value="${mantis.user}"/>
+        <property name="password" value="${mantis.password}"/>
+    </bean>
+    
+    <!-- 
+    Mail Session Factory
+    -->
+    <bean id="mailSessionFactory" class="com.supermanhamuerto.nestor.MailSessionFactory" 
+            scope="singleton">
+        <property name="mailAuthenticator" ref="mailSessionFactoryAuthenticator"/>
+        <property name="mailConfig">
+            <props>
+            <prop key="debug">true</prop>
+            <prop key="mail.usessl">${mail.usessl}</prop>
+            
+            <prop key="mail.user">${mail.user}</prop>
+            <prop key="mail.password">${mail.password}</prop>
+            <prop key="mail.store.host">${mail.store.host}</prop>
+            <!-- mail.store.protocol default value: imap -->
+            <prop key="mail.store.protocol">${mail.store.protocol}</prop>
+            <prop key="mail.imap.port">${mail.imap.port}</prop>
+            <!-- 
+            <prop key="mail.imap.socketFactory.port">${mail.imap.socketFactory.port}</prop>
+            <prop key="mail.imap.socketFactory.class">${mail.imap.socketFactory.class}</prop>
+             -->
+            <prop key="mail.smtp.host">${mail.smtp.host}</prop>
+            <prop key="mail.smtp.port">${mail.smtp.port}</prop>
+            <!-- 
+            <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+            <prop key="mail.smtp.socketFactory.port">${mail.smtp.socketFactory.port}</prop>
+            <prop key="mail.smtp.socketFactory.class">${mail.smtp.socketFactory.class}</prop>
+            <prop key="mail.smtp.socketFactory.fallback">${mail.smtp.socketFactory.fallback}</prop>
+             -->
+            </props>
+        </property>
+    </bean>
+
+    <bean id="mailSessionFactoryAuthenticator" 
+            class="com.supermanhamuerto.nestor.MailSessionFactoryAuthenticator"
+            scope="singleton">
+        <property name="username" value="${mail.user}"/>
+        <property name="password" value="${mail.password}"/>
+    </bean>
+    
+
+    
+    <!-- 
+    MailReader bean
+     -->
+    <bean id="mailReader" class="com.supermanhamuerto.nestor.MailReader" 
+        scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="mailMessageFactory" ref="mailMessageFactory"/>
+        <property name="mantis" ref="mantis"/>
+        <property name="mailFilter" ref="mailFilter"/>
+        <property name="mailProcessorsList">
+            <list>
+                <ref bean="mailProcessorMantis"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="mailFilter" class="com.supermanhamuerto.nestor.MailFilter"
+        scope="singleton">
+        <!-- to filter by the subject, add regular expressions here -->
+        <property name="subjectFilter">
+            <props>
+                <!-- 
+                All the emails that begin with "nestor.subject.id", 
+                which by default is the literal "Nestor>" come from 
+                nestor, and should be ignored (they are forwardings 
+                and things like that
+                 -->
+                <prop key="exp1">^${nestor.subject.id}</prop>
+                <prop key="matching1">not-contains</prop>
+                
+                <!-- Filter used for debug -->
+                <prop key="exp2">${filter.contains1}</prop>
+                <prop key="matching2">contains</prop>
+
+                <!-- common filters for delayed mail, automatic replies and etc. -->
+                <prop key="exp3">^${filter.not.contains1}</prop>
+                <prop key="matching3">not-contains</prop>
+                <prop key="exp4">^${filter.not.contains2}</prop>
+                <prop key="matching4">not-contains</prop>
+                <prop key="exp5">^${filter.not.contains3}</prop>
+                <prop key="matching5">not-contains</prop>
+                <prop key="exp6">^${filter.not.contains4}</prop>
+                <prop key="matching6">not-contains</prop>
+                <prop key="exp7">^${filter.not.contains5}</prop>
+                <prop key="matching7">not-contains</prop>
+                <prop key="exp8">^${filter.not.contains6}</prop>
+                <prop key="matching8">not-contains</prop>
+                <prop key="exp9">^${filter.not.contains7}</prop>
+                <prop key="matching9">not-contains</prop>
+                <prop key="exp10">^${filter.not.contains8}</prop>
+                <prop key="matching10">not-contains</prop>
+                <prop key="exp11">^${filter.not.contains9}</prop>
+                <prop key="matching11">not-contains</prop>
+                <prop key="exp12">^${filter.not.contains10}</prop>
+                <prop key="matching12">not-contains</prop>
+                <prop key="exp13">^${filter.not.contains11}</prop>
+                <prop key="matching13">not-contains</prop>
+                <prop key="exp14">^${filter.not.contains12}</prop>
+                <prop key="matching14">not-contains</prop>
+                <prop key="exp15">^${filter.not.contains13}</prop>
+                <prop key="matching15">not-contains</prop>
+                <prop key="exp16">^${filter.not.contains14}</prop>
+                <prop key="matching16">not-contains</prop>
+                <prop key="exp17">^${filter.not.contains15}</prop>
+                <prop key="matching17">not-contains</prop>
+                <prop key="exp18">^${filter.not.contains16}</prop>
+                <prop key="matching18">not-contains</prop>
+                <prop key="exp19">^${filter.not.contains17}</prop>
+                <prop key="matching19">not-contains</prop>
+                <prop key="exp20">^${filter.not.contains18}</prop>
+                <prop key="matching20">not-contains</prop>
+                <prop key="exp21">^${filter.not.contains19}</prop>
+                <prop key="matching21">not-contains</prop>
+                
+            </props>
+        </property>
+        <!-- BODY FILTERING DOESN'T WORK ACTUALLY -->
+        <!-- to filter by the body, add regular expressions here -->
+        <property name="bodyFilter">
+            <props>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="issueDataFactory" class="com.supermanhamuerto.nestor.IssueDataFactory"
+        scope="singleton">
+    </bean>
+    
+    <bean id="issueData" class="com.supermanhamuerto.nestor.IssueData"
+        scope="prototype">
+    </bean>
+
+    <bean id="issueDataAttachment" class="com.supermanhamuerto.nestor.IssueDataAttachment"
+        scope="prototype">
+    </bean>
+
+    <bean id="noteData" class="com.supermanhamuerto.nestor.NoteData"
+        scope="prototype">
+    </bean>
+
+    <bean id="mailProcessorMantis" 
+        class="com.supermanhamuerto.nestor.MailProcessorMantis"
+        init-method="init"
+        scope="prototype">
+        <property name="issueDataFactory" ref="issueDataFactory"/>
+        <property name="afterProcessActions">
+            <list>
+                <ref bean="forward-to-mailbox"/>
+                <ref bean="archive-to-important"/>
+            </list>
+        </property>
+        <property name="maximumAttachmentSize" value="${maximumAttachmentSize}"/>
+        <property name="mantis" ref="mantis"/>
+        <!-- 
+          // template to add per issue
+          // It can hold various values: 
+          // ##from : from address
+          // ##to: to address
+          // ##sent : sent date 
+         -->
+        <property name="newIssueHeader" value="${mantis.newIssue.header}"/>
+        <!-- 
+          // template to add per existing 
+          // issue. it can hold various values:
+          // ##from : from address
+          // ##to: to address
+          // ##sent: sent date
+         -->
+        <property name="existingIssueHeader" value="${mantis.newNote.header}"/>
+        <!-- 
+         -->
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+    </bean>
+    
+    <bean id="mailMessageFactory" class="com.supermanhamuerto.nestor.MailMessageFactory">
+    </bean>
+
+    <bean id="mailMessage" class="com.supermanhamuerto.nestor.MailMessage"
+        init-method="init"
+        scope="prototype">
+        <property name="mailChunkFactory" ref="mailChunkFactory"/>
+    </bean>
+
+    <bean id="mailChunkFactory" class="com.supermanhamuerto.nestor.MailChunkFactory"
+          scope="singleton">
+    </bean>
+
+    <bean id="mailChunkHtml" class="com.supermanhamuerto.nestor.MailChunkHtml"
+            scope="prototype">
+    </bean>
+    
+    <bean id="mailChunkText" class="com.supermanhamuerto.nestor.MailChunkText"
+            scope="prototype">
+    </bean>
+    
+    <bean id="mailChunkAttachment" class="com.supermanhamuerto.nestor.MailChunkAttachment"
+            scope="prototype">
+        <property name="maximumAttachmentSize" value="${maximumAttachmentSize}"/>
+    </bean>
+
+    <!-- 
+    
+    Actions ...................................................
+    
+     -->
+     <bean id="forward-to-mailbox"
+           class="com.supermanhamuerto.nestor.actions.MantisProcessorActionResend"
+           scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="resendFrom" value="${resender.from}"/>
+        <property name="resendTo" value="${resender.to}"/>
+        <property name="replyTo" value="${resender.replyTo}"/>
+        <property name="subjectStamp" value="${nestor.subject.id}"/>
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+        <property name="body" value="${resender.body}"/>
+     </bean>
+     
+     <bean id="archive-to-important"
+            class="com.supermanhamuerto.nestor.actions.MantisProcessorActionArchive"
+            scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="fromFolder" value="${mail.store.inbox}"/>
+        <property name="toFolder" value="${to.folder}"/>
+     </bean>
+
+</beans>

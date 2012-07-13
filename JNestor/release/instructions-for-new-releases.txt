@@ -1,0 +1,65 @@
+
+
+
+Instructions to create a release
+--------------------------------
+
+
+1. create a directory with the version number (1.0, 2.0, etc.) and add to version control
+2. copy the following contents: 
+    2.0. update README filename and copy onto the 
+         new version folder
+    2.1. create a "lib" directory and copy all the content 
+         of the parent "lib" directory. Don't copy the directory
+         as a whole, because it make trouble with subversion
+    2.2. double-click into the "jnestor.jardesc" in order to 
+         create a fresh new jnestor.jar file. Copy it to the 
+         release directory
+    2.3. copy the following files to the main directory: 
+         applicationContext.xml
+         log4j.properties
+         mail.properties
+         tools/jnestor.sh
+         tools/jnestor.bat
+         scripts/* <-- create a directory and copy the files onto it, 
+                       don't copy the whole directory because you 
+                       will drag all the subversion information and 
+                       will mess up all the project
+    2.4. remove passwords in the applicationContext.xml file
+    2.5. configure properly logging by setting a rolling file 
+    appender like this: 
+    
+             <props>
+                <!-- 
+                root logger configuration: it will log all errors (including trace messages)
+                and them will be directed to the logfile appender
+                 -->
+                <prop key="log4j.rootLogger">ERROR, logfile</prop>
+                
+                <prop key="log4j.appender.logfile">org.apache.log4j.RollingFileAppender</prop>
+                <prop key="log4j.appender.logfile.maxFilesize">1MB</prop>
+                <prop key="log4j.appender.logfile.maxBackupIndex">9</prop>
+                <prop key="log4j.appender.logfile.File">PUT-HERE-A-CORRECT-FILENAME.LOG</prop>
+                <prop key="log4j.appender.logfile.layout">org.apache.log4j.PatternLayout</prop>
+                <prop key="log4j.appender.logfile.layout.ConversionPattern">%d{yyyy-MM-dd HH:mm:ss} %-5p %-40c{3} - %m%n</prop>
+            </props>
+             
+3. the name of the release directory should be something like "jnestor-2.0": it
+   is the more appealing to users who unpack the zip file
+
+4. create a zip file and a tgz file 
+
+	release$ tar -czf jnestor-??.tgz jnestor-??/
+	release$ zip -r jnestor-??.zip jnestor-??/ -x *.svn*
+	release$ mv jnestor-??.tgz ~/tmp
+	release$ mv jnestor-??.zip ~/tmp
+	
+5. upload them into sourceforge (and delete from the project) 
+
+6. you are done. It's a good idea to. 
+6.1 send some lines to the list (jnestor-general@lists.sourceforge.net) in order to 
+    inform to possible readers that there is a new version 
+6.2 inform in the web site of the new release of the software
+
+
+         
