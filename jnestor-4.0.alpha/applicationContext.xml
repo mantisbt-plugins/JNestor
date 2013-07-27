@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/security 
+           http://www.springframework.org/schema/security/spring-security-2.0.xsd
+           http://www.springframework.org/schema/lang 
+           http://www.springframework.org/schema/lang/spring-lang-2.5.xsd">
+
+    
+    <!-- 
+    
+    
+    Configuration of the log file..............................................
+    
+    
+     -->
+    <bean id="loggerConfigurator"
+          class="com.supermanhamuerto.util.LoggerConfiguratorBean"
+          scope="singleton">
+        <property name="configuration">
+             <props>
+                <!-- 
+                root logger configuration: it will log all errors (including trace messages)
+                and them will be directed to the logfile appender
+                 -->
+                <prop key="log4j.rootLogger">INFO, console, logfile</prop>
+                
+                <prop key="log4j.appender.console">org.apache.log4j.ConsoleAppender</prop>
+                <prop key="log4j.appender.console.layout">org.apache.log4j.PatternLayout</prop>
+                <prop key="log4j.appender.console.layout.ConversionPattern">%d %-5p %-40c{3} - %m%n</prop>
+
+                <!-- 
+                This log file is rotated automatically:
+                    - when it reach 1 Mb, it is renamed and a new log file starts
+                    - the maximum backup files that can be held is 10
+                 -->
+                <prop key="log4j.appender.logfile">org.apache.log4j.RollingFileAppender</prop>
+                <prop key="log4j.appender.logfile.File">PUT-HERE-THE-LOG-FILE.log</prop>
+                <prop key="log4j.appender.logfile.maxFileSize">1MB</prop>
+                <prop key="log4j.appender.logfile.maxBackupIndex">10</prop>
+                <prop key="log4j.appender.logfile.layout">org.apache.log4j.PatternLayout</prop>
+                <prop key="log4j.appender.logfile.layout.ConversionPattern">%d{yyyy-MM-dd HH:mm:ss} %-5p %-40c{3} - %m%n</prop>
+
+                <!-- 
+                Uncoment this part to have all the log information in just one file. 
+                This is discouraged because it can end in big log files unless 
+                a rolling mechanism, external to JNestor is put in place (logrotate)
+                 -->
+                <!-- 
+                <prop key="log4j.appender.logfile">org.apache.log4j.FileAppender</prop>
+                <prop key="log4j.appender.logfile.File">/home/rluna/tmp/jnestor.log</prop>
+                <prop key="log4j.appender.logfile.layout">org.apache.log4j.PatternLayout</prop>
+                <prop key="log4j.appender.logfile.layout.ConversionPattern">%d{yyyy-MM-dd HH:mm:ss} %-5p %-40c{3} - %m%n</prop>
+                 -->
+            </props>       
+        </property>
+    </bean>
+
+    <!--
+    
+    
+    Configuration of mantis and email..............................................
+    
+    
+     -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          scope="singleton">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="nullValue" value="null"/>
+        <property name="properties">
+            <props>
+                <!-- 
+                Which port the application will be listening to??
+                By default is 8888, but you can choose whatever 
+                you want. This port is used only to send a 
+                message in the case of stopping the application
+                 -->
+                <prop key="port">8888</prop>
+                
+                <!-- 
+                How to identify nestor own emails. For instance, 
+                all the emails that nestor resends automatically
+                will start with this text. Nestor will recognize 
+                it (via the mailFilter bean) and avoid processing 
+                these emails
+                 -->
+                <prop key="nestor.subject.id">Nestor&gt;</prop>
+                <!-- 
+                 Configuration to access mantis
+                
+                 Configure the access to mantis. In "url" you should have an url
+                 like http://something/api/soap/mantisconnect.php. 
+                 The project id is the project you want the issues to be added. 
+                 The user must be an user with credentials to add to add issues 
+                 to this project.                
+                 -->               
+                <prop key="mantis.projectid">1</prop>
+                <prop key="mantis.category">General</prop>
+				<prop key="mantis.user">jnestor</prop>
+                <prop key="mantis.password">XXXXXX</prop>
+                <prop key="mantis.url">http://localhost/mantis/api/soap/mantisconnect.php</prop>
+                
+                <!-- 
+                New issue header and new note header: this text will be 
+                added at the beginning of a new issue and a new note. 
+                Normally it will identify the sender of the message and 
+                date sent. If in doubt, leave them unchanged. 
+                 -->
+                <prop key="mantis.newIssue.header">From: ##from 
+Sent: ##sent
+
+
+</prop>
+                <prop key="mantis.newNote.header">From: ##from
+To: ##to
+Sent: ##sent
+
+
+</prop>
+                <!-- 
+				Stamp. In the subject of all the emails will appear something 
+				like [ns2837] to identify the mantis iisue given. 
+				If in doubt, leave it unchanged.              
+                 -->
+                 <prop key="mantis.issuestamp">[ns##issueid]</prop>
+                 <!-- 
+                 Mail configuration: smtp server, imap server (or pop server)
+                 and things like that. If you don't know what I am speaking about, 
+                 it's time to read something, google something and 
+                 try to guess the correct values. There is little help at this 
+                 point.
+                  -->
+                 <!-- 
+                 Example of secure mail configuration
+                  -->
+                 <prop key="mail.usessl">true</prop>
+                 <prop key="mail.user">jnestor.test</prop>
+                 <prop key="mail.password">XXXXXX</prop>
+                 <prop key="mail.store.host">imap.gmail.com</prop>
+                 <prop key="mail.store.protocol">imap</prop>
+                 <prop key="mail.imap.port">993</prop>
+                 <prop key="mail.imap.socketFactory.port">993</prop>
+                 <prop key="mail.imap.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+                 <!--  
+                 Thanks to http://magnuspo.wordpress.com/2008/05/30/javamail-secure-smtp/
+                  -->
+                 <prop key="mail.smtp.host">smtp.googlemail.com</prop>
+                 <prop key="mail.smtp.port">465</prop>
+                 <prop key="mail.smtp.auth">true</prop>
+                 <prop key="mail.smtp.socketFactory.port">465</prop>
+                 <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+                 <prop key="mail.smtp.socketFactory.fallback">false</prop>                 
+                 <!-- 
+                 Example of insecure mail configuration
+                  -->
+                 <!-- 
+                 <prop key="mail.usessl">false</prop>
+                 <prop key="mail.user">rluna</prop>
+                 <prop key="mail.password">XXXXXX</prop>
+                 <prop key="mail.store.host">imap.arrakis.es</prop>
+                 <prop key="mail.store.protocol">imap</prop>
+                 <prop key="mail.imap.port">143</prop>
+                 <prop key="mail.smtp.host">smtp.arrakis.es</prop>
+                 <prop key="mail.smtp.port">587</prop>
+                  -->
+                 <!-- 
+                 What will be the maximum attachment size in bytes?
+                  -->
+                 <prop key="maximumAttachmentSize">15000000</prop>
+                 <!-- 
+                 Actions
+                 
+                 After an issue is created or a note is added, you can do 
+                 more things with the email, or with the issue/note created. 
+                 For this I've created the actions.
+                  -->
+                 <!-- 
+                 Action Resender
+                 Resends the original email to other address (or to the
+                 same original mailbox)
+                  -->
+                 <prop key="resender.from">jnestor.test@gmail.com</prop>
+                 <prop key="resender.to">jnestor.test@gmail.com</prop>
+                 <prop key="resender.replyTo">##original_sender</prop>
+                 <prop key="resender.contentType">text/html</prop>
+                 <prop key="resender.body">
+&lt;html&gt;
+
+&lt;p&gt;
+Hello:&lt;/p&gt;
+&lt;p&gt;
+I've entered this issue in Mantis with the id: ##issueid&lt;/p&gt;
+&lt;p&gt;
+Sincerely,&lt;br&gt;
+Nestor Moulinsart&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;/html&gt;                 
+                 </prop>
+                 <!-- 
+                 Action archiver
+                 Moves the original email to a folder
+                  -->
+                 <prop key="to.folder">original_messages</prop>
+                 <!-- 
+                 Action deleter
+                 Deletes the original message (by the moment not active)
+                  -->
+
+                 <!-- 
+                 Start and stop the service: to start and 
+                 stop the service, it exchanges a random string.
+                 It is advisable to change this value by 
+                 a value invented on your own to avoid 
+                 allowing third parties to kill your service
+                 through the network.
+                  --> 
+                 <prop key="secret">b87cf3126c83dcd78a37a131d443c60e</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <!-- 
+    this bean is only to pass some 
+    config information to the main 
+    application
+     -->
+    <bean id="configReader"
+          class="com.supermanhamuerto.util.ConfigReader"
+          scope="singleton">
+        <property name="values">
+            <map>
+                <entry key="secret" value="${secret}"/>
+                <entry key="port" value="${port}"/>
+            </map>
+        </property>
+    </bean>
+
+
+    <!-- 
+    
+    Mantis Main thread (worker)
+    
+     -->
+    <bean id="nestorMainThread"
+        class="com.supermanhamuerto.nestor.NestorMainThread"
+        scope="prototype">
+        <property name="mantis" ref="mantis"/>
+        <property name="mailReader" ref="mailReader"/>
+        <property name="secondsToWait" value="60"/>
+    </bean>
+    
+    <!-- 
+    
+    Mantis soap communicator
+    
+     -->
+    <bean id="mantis" class="com.supermanhamuerto.nestor.mantis.SoapMantis" 
+        init-method="init"
+        scope="singleton">
+        <property name="idf" ref="issueDataFactory"/>
+        <property name="user" value="${mantis.user}"/>
+        <property name="password" value="${mantis.password}"/>
+        <property name="url" value="${mantis.url}"/>
+        <property name="projectId" value="${mantis.projectid}"/>
+        <property name="category" value="${mantis.category}"/>
+    </bean>
+    
+    <!-- 
+    
+    Mail Session Factory
+    
+    -->
+    <bean id="mailSessionFactory" class="com.supermanhamuerto.nestor.MailSessionFactory" 
+            scope="singleton">
+        <property name="mailAuthenticator" ref="mailSessionFactoryAuthenticator"/>
+        <property name="mailConfig">
+            <props>
+            <prop key="debug">true</prop>
+            <!-- 
+            See
+            http://www.oracle.com/technetwork/java/javamail/faq-135477.html#fetch
+            for details about this.
+             -->
+            <prop key="mail.imap.partialfetch">false</prop>
+            
+            <prop key="mail.usessl">${mail.usessl}</prop>
+            
+            <prop key="mail.user">${mail.user}</prop>
+            <prop key="mail.password">${mail.password}</prop>
+            <prop key="mail.store.host">${mail.store.host}</prop>
+            <!-- mail.store.protocol default value: imap -->
+            <prop key="mail.store.protocol">${mail.store.protocol}</prop>
+            <prop key="mail.imap.port">${mail.imap.port}</prop>
+            <prop key="mail.imap.socketFactory.port">${mail.imap.socketFactory.port}</prop>
+            <prop key="mail.imap.socketFactory.class">${mail.imap.socketFactory.class}</prop>
+            <prop key="mail.smtp.host">${mail.smtp.host}</prop>
+            <prop key="mail.smtp.port">${mail.smtp.port}</prop>
+            <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+            <prop key="mail.smtp.socketFactory.port">${mail.smtp.socketFactory.port}</prop>
+            <prop key="mail.smtp.socketFactory.class">${mail.smtp.socketFactory.class}</prop>
+            <prop key="mail.smtp.socketFactory.fallback">${mail.smtp.socketFactory.fallback}</prop>
+            <!--
+			   USERS OF EXCHANGE
+			   
+			   Note also that there's a bug in Exchange 2007.
+			   The Exchange server advertises that it supports AUTH=PLAIN,
+			   even though this Exchange documentation (see link) claims that it's not 
+			   supported. This causes JavaMail to choose PLAIN authentication,
+			   which will always fail. To work around this Exchange bug,
+			   set the session property "mail.imap.auth.plain.disable" to "true".
+			   (Change "imap" to "imaps" if you're using the "imaps" protocol.)
+			   http://technet.microsoft.com/en-us/library/cc540463.aspx
+			   
+			   Also, there are bugs in some versions of javamail that
+			   say indicates that NTLM authentication could not work
+			   in certain versions
+			   https://forums.oracle.com/forums/thread.jspa?threadID=1587371
+			   
+			   So I recommend to disable both mechanisms of authentication
+			   -->
+			   <!-- prop key="mail.imap.auth.plain.disable">true</prop -->
+			   <!-- prop key="mail.imap.auth.ntlm.disable">true</prop -->
+            </props>
+        </property>
+    </bean>
+
+    <bean id="mailSessionFactoryAuthenticator" 
+            class="com.supermanhamuerto.nestor.MailSessionFactoryAuthenticator"
+            scope="singleton">
+        <property name="username" value="${mail.user}"/>
+        <property name="password" value="${mail.password}"/>
+    </bean>
+    
+
+    
+    <!--
+     
+    MailReader bean
+    
+    The MailReader is the heart of the system. Under the issueFolderList
+    property you can add all the folders of the inbox you want to read.
+    Moreover, under mailProcessorList, you can instruct JNestor which 
+    actions (processors) you can carry on each mail read. 
+    
+    For instance, customMailFilter is a groovy script who discards 
+    many emails that have some text in the subject (like an auto-responder).
+    The next in the list is the mailProcessorMantis, who creates a mantis
+    issue (or adds a note to an existing one). Next in the list is a 
+    customizable process that put specific properties in the mantis 
+    issue.
+    
+     -->
+    <bean id="mailReader" class="com.supermanhamuerto.nestor.MailReader" 
+        scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="mailMessageFactory" ref="mailMessageFactory"/>
+        <property name="mantis" ref="mantis"/>w
+        <property name="issueFolderList">
+            <list>
+                <value>INBOX</value>
+            </list>
+        </property>
+        <property name="msgTracker" ref="inMemoryMsgTracker"/>
+        <property name="mailProcessorsList">
+            <list>
+                <ref bean="customMailFilter"/>
+                <ref bean="mailProcessorMantis"/>
+                <ref bean="customizableProcess"/>
+                <ref bean="forward-to-mailbox-text"/>
+                <ref bean="forward-to-mailbox-html"/>
+                <ref bean="forward-to-mailbox-attachment"/>
+                <ref bean="forward-to-mailbox-complete"/>
+                <!--  ref bean="archiver"/ -->
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="issueDataFactory" class="com.supermanhamuerto.nestor.mantis.IssueDataFactory"
+        scope="singleton">
+    </bean>
+    
+    <bean id="issueData" class="com.supermanhamuerto.nestor.mantis.IssueDataDto"
+        scope="prototype">
+    </bean>
+
+    <bean id="issueDataAttachment" class="com.supermanhamuerto.nestor.mantis.IssueDataAttachment"
+        scope="prototype">
+    </bean>
+
+    <bean id="noteData" class="com.supermanhamuerto.nestor.mantis.NoteData"
+        scope="prototype">
+    </bean>
+
+    
+    <bean id="mailMessageFactory" 
+        class="com.supermanhamuerto.nestor.MailMessageFactory"
+        scope="singleton">
+    </bean>
+
+    <bean id="mailMessage" class="com.supermanhamuerto.nestor.MailMessageImpl"
+        init-method="init"
+        scope="prototype">
+        <property name="mailChunkFactory" ref="mailChunkFactory"/>
+    </bean>
+
+    <bean id="mailChunkFactory" class="com.supermanhamuerto.nestor.MailChunkFactory"
+          scope="singleton">
+    </bean>
+
+    <bean id="mailChunkHtml" class="com.supermanhamuerto.nestor.MailChunkHtml"
+            scope="prototype">
+    </bean>
+    
+    <bean id="mailChunkText" class="com.supermanhamuerto.nestor.MailChunkText"
+            scope="prototype">
+    </bean>
+    
+    <bean id="mailChunkAttachment" class="com.supermanhamuerto.nestor.MailChunkAttachment"
+            scope="prototype">
+        <property name="maximumAttachmentSize" value="${maximumAttachmentSize}"/>
+    </bean>
+    
+    <bean id="mailChunkAlternative" class="com.supermanhamuerto.nestor.MailChunkAlternative"
+    		scope="prototype">
+   	</bean>
+
+	<!-- 
+	
+	Tracker of the messages. 
+	
+	There are two types of trackers: the persistent
+	msgTracker saves the data of the messages in a 
+	database table. The InMemoryMsgTracker keeps track
+	of messages in memory, and to avoid starving the 
+	memory of the virtual machine, it deletes messages
+	older than X milliseconds (by default 7 days).
+
+	
+	 -->
+	<bean id="persistentMsgTracker" 
+	    class="com.supermanhamuerto.nestor.msgtrack.PersistentMsgTracker"
+		scope="prototype">
+		<property name="sessionFactory" ref="sessionFactory"/>	
+	</bean>
+
+    <bean id="inMemoryMsgTracker"
+          class="com.supermanhamuerto.nestor.msgtrack.InMemoryMsgTracker"
+          init-method="init"
+          scope="prototype">
+    </bean>
+    
+    <!-- 
+    
+    
+    Mail Processors ...................................................
+
+    
+    Mail Processors are beans whose process the mail message: each 
+    one does a specific action and can set one or more properties 
+    in the MailMessage to "inform" to the rest of the chain what 
+    it have do.
+    
+    For instance, mailProcessorMantis adds the mail message into 
+    mantis and sets two properties in the mail message: NEW_OR_EXISTING,
+    who informs if the email corresponds to an existing message or 
+    a new one, and ISSUE_ID, who informs of the issue number in 
+    mantis.
+    
+    
+    
+     -->
+
+    <lang:groovy id="customMailFilter"
+                script-source="classpath:CustomMailFilter.groovy"
+                scope="prototype">
+        <lang:property name="nestorSubject" value="${nestor.subject.id}"/>
+    </lang:groovy>
+    
+    <bean id="mailProcessorMantis" 
+        class="com.supermanhamuerto.nestor.mantis.MailProcessorMantis"
+        init-method="init"
+        scope="prototype">
+        <property name="issueDataFactory" ref="issueDataFactory"/>
+        <property name="maximumAttachmentSize" value="${maximumAttachmentSize}"/>
+        <!-- version 2.0.1 -->
+        <property name="attachOriginalMessage" value="true"/>
+        <property name="mantis" ref="mantis"/>
+        <!-- 
+          // template to add per issue
+          // It can hold various values: 
+          // ##from : from address
+          // ##to: to address
+          // ##sent : sent date 
+         -->
+        <property name="newIssueHeader" value="${mantis.newIssue.header}"/>
+        <!-- 
+          // template to add per existing 
+          // issue. it can hold various values:
+          // ##from : from address
+          // ##to: to address
+          // ##sent: sent date
+         -->
+        <property name="existingIssueHeader" value="${mantis.newNote.header}"/>
+        <!-- 
+         -->
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+    </bean>
+     
+     <bean id="forward-to-mailbox-text"
+           class="com.supermanhamuerto.nestor.processor.MailProcessorResendAsText"
+           scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="resendFrom" value="${resender.from}"/>
+        <property name="resendTo" value="${resender.to}"/>
+        <property name="replyTo" value="${resender.replyTo}"/>
+        <property name="subjectStamp" value="${nestor.subject.id}"/>
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+        <property name="contentType" value="${resender.contentType}"/>
+        <property name="body" value="${resender.body}"/>
+     </bean>
+
+     <bean id="forward-to-mailbox-html"
+           class="com.supermanhamuerto.nestor.processor.MailProcessorResendAsHtml"
+           scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="resendFrom" value="${resender.from}"/>
+        <property name="resendTo" value="${resender.to}"/>
+        <property name="replyTo" value="${resender.replyTo}"/>
+        <property name="subjectStamp" value="${nestor.subject.id}"/>
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+        <property name="contentType" value="${resender.contentType}"/>
+        <property name="body" value="${resender.body}"/>
+     </bean>
+
+     <bean id="forward-to-mailbox-attachment"
+           class="com.supermanhamuerto.nestor.processor.MailProcessorResendAsAttachment"
+           scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="resendFrom" value="${resender.from}"/>
+        <property name="resendTo" value="${resender.to}"/>
+        <property name="replyTo" value="${resender.replyTo}"/>
+        <property name="subjectStamp" value="${nestor.subject.id}"/>
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+        <property name="contentType" value="${resender.contentType}"/>
+        <property name="body" value="${resender.body}"/>
+     </bean>
+
+     <bean id="forward-to-mailbox-complete"
+           class="com.supermanhamuerto.nestor.processor.MailProcessorResendComplete"
+           scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="resendFrom" value="${resender.from}"/>
+        <property name="resendTo" value="${resender.to}"/>
+        <property name="replyTo" value="${resender.replyTo}"/>
+        <property name="subjectStamp" value="${nestor.subject.id}"/>
+        <property name="issueStamp" value="${mantis.issuestamp}"/>
+        <property name="contentType" value="${resender.contentType}"/>
+        <property name="body" value="${resender.body}"/>
+     </bean>
+
+     
+     <bean id="archiver"
+            class="com.supermanhamuerto.nestor.processor.MailProcessorArchiver"
+            scope="prototype">
+        <property name="mailSessionFactory" ref="mailSessionFactory"/>
+        <property name="toFolder" value="${to.folder}"/>
+     </bean>
+
+	<lang:groovy id="customizableProcess"
+				script-source="classpath:CustomizableProcess.groovy"
+				scope="prototype">
+		<lang:property name="mantis" ref="mantis"/>
+	</lang:groovy>
+
+
+    <!--
+    
+    
+    Persistence configuration .................................................
+    
+    
+     -->
+
+	<!-- 
+	STEP ONE 
+	
+	Datasource, the access to mysql. This datasource uses 
+	c3p0, a connection pooling interface and hence it 
+	optimizes the use of connections. This configuration
+	uses a new connection each time is requested.
+
+    If you put this
+          destroy-method="close"
+	an error appears.
+	
+	-->
+	<bean id="dataSource"
+	      class="com.mchange.v2.c3p0.ComboPooledDataSource"
+	      scope="singleton">
+	    <!-- 
+	    To test a connection: 
+	    mysql -h HOSTNAME -u USERNAME -p 
+	    and aftwerwards introduce the password when requested
+	     -->
+	  <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+	  <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/bugtracker"/>
+	  <property name="user" value="root"/>
+	  <property name="password" value="XXXXXX"/>
+	</bean>
+   
+
+	<bean id="jdbcTemplate"
+	      class="org.springframework.jdbc.core.JdbcTemplate"
+	      scope="prototype">
+		<constructor-arg ref="dataSource"/>
+	</bean>	      
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>com.supermanhamuerto.nestor.entity.MessageEnt</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
